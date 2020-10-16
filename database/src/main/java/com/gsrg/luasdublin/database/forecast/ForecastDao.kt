@@ -9,7 +9,7 @@ import androidx.room.Query
 interface ForecastDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(forecast: Forecast)
+    suspend fun insertAll(forecastList: List<Forecast>)
 
     @Query("SELECT * FROM forecastTable")
     suspend fun selectAll(): List<Forecast>?
