@@ -4,7 +4,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
 class ForecastListAdapter : RecyclerView.Adapter<ForecastListViewHolder>() {
-    // TODO define list
+
+    private var dataList: MutableList<Int> = mutableListOf() //TODO change list type
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ForecastListViewHolder {
         return ForecastListViewHolder.create(parent)
@@ -15,6 +16,13 @@ class ForecastListAdapter : RecyclerView.Adapter<ForecastListViewHolder>() {
     }
 
     override fun getItemCount(): Int {
-        return 7 //TODO return list size
+        return dataList.size
+    }
+
+    fun submitData(forecastList: List<Int>) {
+        if (forecastList != dataList) {
+            dataList = forecastList.toMutableList()
+            notifyDataSetChanged()
+        }
     }
 }
