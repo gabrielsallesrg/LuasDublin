@@ -13,7 +13,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.simplexml.SimpleXmlConverterFactory
 import javax.inject.Singleton
 
 @InstallIn(ApplicationComponent::class)
@@ -43,7 +43,7 @@ object AppModule {
         return Retrofit.Builder()
             .baseUrl(BuildConfig.LUAS_BASE_URL)
             .client(client)
-            .addConverterFactory(GsonConverterFactory.create()) // TODO change to something for XML
+            .addConverterFactory(SimpleXmlConverterFactory.create())
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .build()
             .create(LuasApiService::class.java)

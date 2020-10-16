@@ -1,6 +1,9 @@
 package com.gsrg.luasdublin.domain.data
 
+import com.gsrg.luasdublin.domain.model.ForecastResponse
+import io.reactivex.Observable
+
 interface IForecastRepository {
 
-    //TODO
+    fun getForecastByStop(stop: String): Observable<ForecastResponse>
 }

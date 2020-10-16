@@ -30,19 +30,19 @@ android {
     buildTypes {
         release {
             buildConfigField "Boolean", "MOCK_RESPONSE", "false"
-            buildConfigField "String", "LUAS_BASE_URL", "\"https://TO_DEFINE/\""
+            buildConfigField "String", "LUAS_BASE_URL", "\"https://luasforecasts.rpa.ie/xml/\""
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
             buildConfigField "Boolean", "MOCK_RESPONSE", "false"
-            buildConfigField "String", "LUAS_BASE_URL", "\"https://TO_DEFINE/\""
+            buildConfigField "String", "LUAS_BASE_URL", "\"https://luasforecasts.rpa.ie/xml/\""
             minifyEnabled false
             debuggable = true
         }
         mock {
             buildConfigField "Boolean", "MOCK_RESPONSE", "true"
-            buildConfigField "String", "LUAS_BASE_URL", "\"https://TO_DEFINE/\""
+            buildConfigField "String", "LUAS_BASE_URL", "\"https://luasforecasts.rpa.ie/xml/\""
             minifyEnabled false
             debuggable = true
             signingConfig signingConfigs.debug
@@ -61,6 +61,11 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+    implementation('com.squareup.retrofit2:converter-simplexml:2.6.1') {
+        exclude module: 'stax'
+        exclude module: 'stax-api'
+        exclude module: 'xpp3'
+    }
     implementation "com.squareup.okhttp3:logging-interceptor:4.9.0"
 
     // Coroutines
