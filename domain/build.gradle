@@ -2,6 +2,7 @@ plugins {
     id 'com.android.library'
     id 'kotlin-android'
     id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
 }
 
 android {
@@ -29,16 +30,19 @@ android {
     buildTypes {
         release {
             buildConfigField "Boolean", "MOCK_RESPONSE", "false"
+            buildConfigField "String", "LUAS_BASE_URL", "\"https://TO_DEFINE/\""
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
             buildConfigField "Boolean", "MOCK_RESPONSE", "false"
+            buildConfigField "String", "LUAS_BASE_URL", "\"https://TO_DEFINE/\""
             minifyEnabled false
             debuggable = true
         }
         mock {
             buildConfigField "Boolean", "MOCK_RESPONSE", "true"
+            buildConfigField "String", "LUAS_BASE_URL", "\"https://TO_DEFINE/\""
             minifyEnabled false
             debuggable = true
             signingConfig signingConfigs.debug
@@ -66,8 +70,16 @@ dependencies {
     //RXJava
     implementation "io.reactivex.rxjava2:rxjava:$rxjava_version"
 
+    // Hilt dependencies
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+    kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
+
     // Timber - Log
     implementation "com.jakewharton.timber:timber:$timber_version"
+
+    // Hilt testing dependencies
+    androidTestImplementation "com.google.dagger:hilt-android-testing:$hilt_version"
+    kaptAndroidTest "com.google.dagger:hilt-android-compiler:$hilt_version"
 
     testImplementation "junit:junit:$junit_version"
     androidTestImplementation "androidx.test.ext:junit:$androidx_junit_version"
