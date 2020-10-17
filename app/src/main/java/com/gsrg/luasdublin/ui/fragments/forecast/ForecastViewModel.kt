@@ -47,6 +47,12 @@ class ForecastViewModel
         disposables.clear()
     }
 
+    /**
+     * This method uses the Single Source of Truth
+     * It will only return data from the DB
+     * When new data comes from the repository, it updates the DB.
+     * Then the new DB data is used to update the UI
+     */
     fun requestForecastList(firstRun: Boolean = false) {
         if (!firstRun || (firstRun && this.firstRun)) {
             this.firstRun = false
@@ -126,6 +132,10 @@ class ForecastViewModel
         return (hour > 12 || (hour == 12 && minute > 0))
     }
 
+    /**
+     * From here until the end is about doing requests to DB
+     * and updating the DB
+     */
     private suspend fun storeForecastInDB(forecastList: List<Forecast>) {
         database.forecastDao().clearTable()
         database.forecastDao().insertAll(forecastList)
