@@ -1,5 +1,6 @@
 package com.gsrg.luasdublin.ui.fragments.forecast
 
+import androidx.annotation.VisibleForTesting
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -7,11 +8,13 @@ import androidx.lifecycle.viewModelScope
 import com.gsrg.luasdublin.Event
 import com.gsrg.luasdublin.database.ILuasDatabase
 import com.gsrg.luasdublin.database.forecast.Forecast
+import com.gsrg.luasdublin.database.updatetime.UpdateTime
 import com.gsrg.luasdublin.domain.api.Result
 import com.gsrg.luasdublin.domain.data.IForecastRepository
 import com.gsrg.luasdublin.domain.model.DirectionResponse
 import com.gsrg.luasdublin.domain.model.TramResponse
 import com.gsrg.luasdublin.domain.utils.TAG
+import com.gsrg.luasdublin.utils.ICalendar
 import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -20,12 +23,12 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import kotlin.random.Random
 
 class ForecastViewModel
 @ViewModelInject constructor(
     private val repository: IForecastRepository,
-    private val database: ILuasDatabase
+    private val database: ILuasDatabase,
+    private val calendar: ICalendar
 ) : ViewModel() {
 
     private var disposables = CompositeDisposable()
@@ -45,10 +48,13 @@ class ForecastViewModel
         }
         viewModelScope.launch {
             requestForecastsFromDB()
+            requestUpdateTimeFromDB()
             forecastListLiveData.value = Event(Result.Loading)
-            forecastObservable = repository.getForecastByStop(getStopAbbreviationName()) //TODO get the right string and map to DB object
+            var time: Long = 0
+            forecastObservable = repository.getForecastByStop(getStopAbbreviationName())
                 .map {
                     val directionList = getCorrectTramList(it.directionList ?: emptyList())
+                    time = calendar.time()
                     val resultList = ArrayList<Forecast>()
                     for (direction in directionList) {
                         resultList.add(Forecast(destination = direction.destination, dueMinutes = direction.dueMins))
@@ -67,9 +73,9 @@ class ForecastViewModel
                     viewModelScope.launch {
                         storeForecastInDB(t)
                         requestForecastsFromDB()
+                        storeUpdateTimeInDB(time)
+                        requestUpdateTimeFromDB()
                     }
-                    //TODO delete this next line
-                    lastUpdateAtLiveData.value = "42:42" //TODO update with the right time
                 }
 
                 override fun onError(e: Throwable) {
@@ -86,7 +92,7 @@ class ForecastViewModel
     }
 
     private fun getCorrectTramList(directionList: List<DirectionResponse>): List<TramResponse> {
-        val directionName = if (isItAfternoon()) "Inbound" else "Outbound"
+        val directionName = if (isAfternoon()) "Inbound" else "Outbound"
         for (direction in directionList) {
             if (direction.name == directionName) {
                 return direction.tramList
@@ -96,12 +102,17 @@ class ForecastViewModel
     }
 
     private fun getStopAbbreviationName(): String {
-        return if (isItAfternoon()) "sti" else "mar"
+        return if (isAfternoon()) "sti" else "mar"
     }
 
-    private fun isItAfternoon(): Boolean {
-        //TODO check if it is 12:01 – 23:59
-        return Random.nextBoolean()
+    /**
+     * It is afternoon if is between 12:01 and 23:59
+     */
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun isAfternoon(): Boolean {
+        val hour = calendar.hour()
+        val minute = calendar.minute()
+        return (hour > 12 || (hour == 12 && minute > 0))
     }
 
     private suspend fun storeForecastInDB(forecastList: List<Forecast>) {
@@ -113,6 +124,18 @@ class ForecastViewModel
         val forecastList: List<Forecast> = database.forecastDao().selectAll() ?: emptyList()
         if (forecastList.isNotEmpty()) {
             forecastListLiveData.value = Event(Result.Success(data = forecastList))
+        }
+    }
+
+    private suspend fun storeUpdateTimeInDB(time: Long) {
+        database.updateTimeDao().clearTable()
+        database.updateTimeDao().insert(UpdateTime(time))
+    }
+
+    private suspend fun requestUpdateTimeFromDB() {
+        val updateTime: UpdateTime? = database.updateTimeDao().select()
+        if (updateTime != null) {
+            lastUpdateAtLiveData.value = calendar.formattedHourAndMinute(updateTime.date)
         }
     }
 }
