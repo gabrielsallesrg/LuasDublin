@@ -1,5 +1,6 @@
 package com.gsrg.luasdublin.ui.fragments.forecast
 
+import androidx.annotation.VisibleForTesting
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -107,7 +108,8 @@ class ForecastViewModel
     /**
      * It is afternoon if is between 12:01 and 23:59
      */
-    private fun isAfternoon(): Boolean {
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun isAfternoon(): Boolean {
         val hour = calendar.hour()
         val minute = calendar.minute()
         return (hour > 12 || (hour == 12 && minute > 0))
