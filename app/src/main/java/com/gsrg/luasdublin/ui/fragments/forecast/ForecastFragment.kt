@@ -33,7 +33,7 @@ class ForecastFragment : BaseFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setObservers()
-        //TODO viewModel.requestForecastList() once
+        viewModel.requestForecastList(firstRun = true)
     }
 
     private fun setListeners() {
@@ -43,11 +43,10 @@ class ForecastFragment : BaseFragment() {
     }
 
     private fun setObservers() {
-        viewModel.forecastListLiveData.observe(viewLifecycleOwner, {
+        viewModel.requestEventLiveData.observe(viewLifecycleOwner, {
             when (val result = it.getContentIfNotHandled()) {
                 is Result.Success -> {
                     hideLoading()
-                    adapter.submitData(result.data)
                 }
                 is Result.Error -> {
                     hideLoading()
@@ -57,12 +56,10 @@ class ForecastFragment : BaseFragment() {
                 is Result.Loading -> {
                     showLoading()
                 }
-                null -> {
-                    if (it.peekContent() is Result.Success) {
-                        adapter.submitData((it.peekContent() as Result.Success).data)
-                    }
-                }
             }
+        })
+        viewModel.forecastListLiveData.observe(viewLifecycleOwner, {
+            adapter.submitData(it)
         })
         viewModel.lastUpdateAtLiveData.observe(viewLifecycleOwner, {
             binding.updatedAtTextView.text = getString(R.string.updated_at, it)

@@ -34,61 +34,69 @@ class ForecastViewModel
     private var disposables = CompositeDisposable()
     private var forecastObservable: Observable<List<Forecast>>? = null
 
-    val forecastListLiveData = MutableLiveData<Event<Result<List<Forecast>>>>()
+    val requestEventLiveData = MutableLiveData<Event<Result<Boolean>>>()
+    val forecastListLiveData = MutableLiveData<List<Forecast>>()
     val lastUpdateAtLiveData = MutableLiveData<String>()
+
+    private var firstRun = true
 
     override fun onCleared() {
         super.onCleared()
         disposables.clear()
     }
 
-    fun requestForecastList() {
-        if (forecastObservable != null) {
-            disposables.clear()
-        }
-        viewModelScope.launch {
-            requestForecastsFromDB()
-            requestUpdateTimeFromDB()
-            forecastListLiveData.value = Event(Result.Loading)
-            var time: Long = 0
-            forecastObservable = repository.getForecastByStop(getStopAbbreviationName())
-                .map {
-                    val directionList = getCorrectTramList(it.directionList ?: emptyList())
-                    time = calendar.time()
-                    val resultList = ArrayList<Forecast>()
-                    for (direction in directionList) {
-                        resultList.add(Forecast(destination = direction.destination, dueMinutes = direction.dueMins))
+    fun requestForecastList(firstRun: Boolean = false) {
+        if (!firstRun || (firstRun && this.firstRun)) {
+            this.firstRun = false
+            if (forecastObservable != null) {
+                disposables.clear()
+            }
+            viewModelScope.launch {
+                requestForecastsFromDB()
+                requestUpdateTimeFromDB()
+                requestEventLiveData.value = Event(Result.Loading)
+                var time: Long = 0
+                forecastObservable = repository.getForecastByStop(getStopAbbreviationName())
+                    .map {
+                        val directionList = getCorrectTramList(it.directionList ?: emptyList())
+                        time = calendar.time()
+                        val resultList = ArrayList<Forecast>()
+                        for (direction in directionList) {
+                            resultList.add(Forecast(destination = direction.destination, dueMinutes = direction.dueMins))
+                        }
+                        resultList.toList()
                     }
-                    resultList.toList()
-                }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
 
-            forecastObservable?.subscribe(object : Observer<List<Forecast>> {
-                override fun onSubscribe(d: Disposable) {
-                    disposables.add(d)
-                }
-
-                override fun onNext(t: List<Forecast>) {
-                    viewModelScope.launch {
-                        storeForecastInDB(t)
-                        requestForecastsFromDB()
-                        storeUpdateTimeInDB(time)
-                        requestUpdateTimeFromDB()
+                forecastObservable?.subscribe(object : Observer<List<Forecast>> {
+                    override fun onSubscribe(d: Disposable) {
+                        disposables.add(d)
                     }
-                }
 
-                override fun onError(e: Throwable) {
-                    Timber.tag(TAG()).e(e)
-                    forecastListLiveData.value = Event(Result.Error(Exception(e), e.message ?: "Something went wrong"))
-                }
+                    override fun onNext(t: List<Forecast>) {
+                        viewModelScope.launch {
+                            storeForecastInDB(t)
+                            requestForecastsFromDB()
+                            storeUpdateTimeInDB(time)
+                            requestUpdateTimeFromDB()
+                            requestEventLiveData.value = Event(Result.Success(data = true))
+                        }
+                    }
 
-                override fun onComplete() {
-                    Timber.tag(TAG()).d("forecastObservable: onComplete")
-                }
+                    override fun onError(e: Throwable) {
+                        Timber.tag(TAG()).e(e)
+                        requestEventLiveData.value = Event(Result.Error(Exception(e), e.message ?: "Something went wrong"))
+                    }
 
-            })
+                    override fun onComplete() {
+                        Timber.tag(TAG()).d("forecastObservable: onComplete")
+                    }
+
+                })
+            }
         }
+
     }
 
     private fun getCorrectTramList(directionList: List<DirectionResponse>): List<TramResponse> {
@@ -123,7 +131,7 @@ class ForecastViewModel
     private suspend fun requestForecastsFromDB() {
         val forecastList: List<Forecast> = database.forecastDao().selectAll() ?: emptyList()
         if (forecastList.isNotEmpty()) {
-            forecastListLiveData.value = Event(Result.Success(data = forecastList))
+            forecastListLiveData.value = forecastList
         }
     }
 
