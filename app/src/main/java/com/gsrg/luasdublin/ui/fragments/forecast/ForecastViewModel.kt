@@ -106,7 +106,7 @@ class ForecastViewModel
         val directionName = if (isAfternoon()) "Inbound" else "Outbound"
         for (direction in directionList) {
             if (direction.name == directionName) {
-                return direction.tramList
+                return direction.tramList ?: emptyList()
             }
         }
         return emptyList()
@@ -133,9 +133,7 @@ class ForecastViewModel
 
     private suspend fun requestForecastsFromDB() {
         val forecastList: List<Forecast> = database.forecastDao().selectAll() ?: emptyList()
-        if (forecastList.isNotEmpty()) {
-            forecastListLiveData.value = forecastList
-        }
+        forecastListLiveData.value = forecastList
     }
 
     private suspend fun storeUpdateTimeInDB(time: Long) {
