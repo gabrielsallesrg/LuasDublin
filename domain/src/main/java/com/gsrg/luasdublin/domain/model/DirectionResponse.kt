@@ -5,7 +5,7 @@ import org.simpleframework.xml.ElementList
 import org.simpleframework.xml.Root
 
 @Root(name = "direction", strict = false)
-data class DirectionResponse( //TODO adapt to XML
+data class DirectionResponse(
 
     @field:Attribute(name = "name")
     @param:Attribute(name = "name")

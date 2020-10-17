@@ -46,7 +46,7 @@ class ForecastViewModel
         viewModelScope.launch {
             requestForecastsFromDB()
             forecastListLiveData.value = Event(Result.Loading)
-            forecastObservable = repository.getForecastByStop(getStopAbbreviationName()) //TODO get the right string and map to DB object
+            forecastObservable = repository.getForecastByStop(getStopAbbreviationName())
                 .map {
                     val directionList = getCorrectTramList(it.directionList ?: emptyList())
                     val resultList = ArrayList<Forecast>()
