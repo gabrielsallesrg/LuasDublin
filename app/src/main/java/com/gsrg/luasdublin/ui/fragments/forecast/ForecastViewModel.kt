@@ -4,6 +4,8 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gsrg.luasdublin.Event
+import com.gsrg.luasdublin.domain.api.Result
 import com.gsrg.luasdublin.domain.data.IForecastRepository
 import com.gsrg.luasdublin.domain.model.DirectionResponse
 import com.gsrg.luasdublin.domain.model.ForecastResponse
@@ -27,7 +29,7 @@ class ForecastViewModel
     private var disposables = CompositeDisposable()
     private var forecastObservable: Observable<ForecastResponse>? = null
 
-    val forecastListLiveData = MutableLiveData<List<TramResponse>>() //TODO change from Int to ForecastItem
+    val forecastListLiveData = MutableLiveData<Event<Result<List<TramResponse>>>>() //TODO change from Int to ForecastItem
     val lastUpdateAtLiveData = MutableLiveData<String>()
 
     override fun onCleared() {
@@ -40,6 +42,7 @@ class ForecastViewModel
             disposables.clear()
         }
         viewModelScope.launch {
+            forecastListLiveData.value = Event(Result.Loading)
             //TODO request from DB
             forecastObservable = repository.getForecastByStop(getStopAbbreviationName()) //TODO get the right string and map to DB object
                 .subscribeOn(Schedulers.io())
@@ -54,13 +57,12 @@ class ForecastViewModel
                     //TODO store in DB and request from DB
                     //TODO delete this next line
                     lastUpdateAtLiveData.value = "42:42" //TODO update with the right time
-                    forecastListLiveData.value = t.directionList?.run { getCorrectTramList(this) } ?: emptyList()
-                    Timber.tag(TAG()).v("forecastObservable: onNext")
+                    forecastListLiveData.value = Event(Result.Success(data = t.directionList?.run { getCorrectTramList(this) } ?: emptyList()))
                 }
 
                 override fun onError(e: Throwable) {
                     Timber.tag(TAG()).e(e)
-                    //TODO show error
+                    forecastListLiveData.value = Event(Result.Error(Exception(e), e.message ?: "Something went wrong"))
                 }
 
                 override fun onComplete() {
