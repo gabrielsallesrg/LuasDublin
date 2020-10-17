@@ -5,10 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gsrg.luasdublin.Event
+import com.gsrg.luasdublin.database.ILuasDatabase
+import com.gsrg.luasdublin.database.forecast.Forecast
 import com.gsrg.luasdublin.domain.api.Result
 import com.gsrg.luasdublin.domain.data.IForecastRepository
 import com.gsrg.luasdublin.domain.model.DirectionResponse
-import com.gsrg.luasdublin.domain.model.ForecastResponse
 import com.gsrg.luasdublin.domain.model.TramResponse
 import com.gsrg.luasdublin.domain.utils.TAG
 import io.reactivex.Observable
@@ -23,13 +24,14 @@ import kotlin.random.Random
 
 class ForecastViewModel
 @ViewModelInject constructor(
-    private val repository: IForecastRepository
+    private val repository: IForecastRepository,
+    private val database: ILuasDatabase
 ) : ViewModel() {
 
     private var disposables = CompositeDisposable()
-    private var forecastObservable: Observable<ForecastResponse>? = null
+    private var forecastObservable: Observable<List<Forecast>>? = null
 
-    val forecastListLiveData = MutableLiveData<Event<Result<List<TramResponse>>>>() //TODO change from Int to ForecastItem
+    val forecastListLiveData = MutableLiveData<Event<Result<List<Forecast>>>>()
     val lastUpdateAtLiveData = MutableLiveData<String>()
 
     override fun onCleared() {
@@ -42,22 +44,32 @@ class ForecastViewModel
             disposables.clear()
         }
         viewModelScope.launch {
+            requestForecastsFromDB()
             forecastListLiveData.value = Event(Result.Loading)
-            //TODO request from DB
             forecastObservable = repository.getForecastByStop(getStopAbbreviationName()) //TODO get the right string and map to DB object
+                .map {
+                    val directionList = getCorrectTramList(it.directionList ?: emptyList())
+                    val resultList = ArrayList<Forecast>()
+                    for (direction in directionList) {
+                        resultList.add(Forecast(destination = direction.destination, dueMinutes = direction.dueMins))
+                    }
+                    resultList.toList()
+                }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
 
-            forecastObservable?.subscribe(object : Observer<ForecastResponse> {
+            forecastObservable?.subscribe(object : Observer<List<Forecast>> {
                 override fun onSubscribe(d: Disposable) {
                     disposables.add(d)
                 }
 
-                override fun onNext(t: ForecastResponse) {
-                    //TODO store in DB and request from DB
+                override fun onNext(t: List<Forecast>) {
+                    viewModelScope.launch {
+                        storeForecastInDB(t)
+                        requestForecastsFromDB()
+                    }
                     //TODO delete this next line
                     lastUpdateAtLiveData.value = "42:42" //TODO update with the right time
-                    forecastListLiveData.value = Event(Result.Success(data = t.directionList?.run { getCorrectTramList(this) } ?: emptyList()))
                 }
 
                 override fun onError(e: Throwable) {
@@ -90,5 +102,17 @@ class ForecastViewModel
     private fun isItAfternoon(): Boolean {
         //TODO check if it is 12:01 – 23:59
         return Random.nextBoolean()
+    }
+
+    private suspend fun storeForecastInDB(forecastList: List<Forecast>) {
+        database.forecastDao().clearTable()
+        database.forecastDao().insertAll(forecastList)
+    }
+
+    private suspend fun requestForecastsFromDB() {
+        val forecastList: List<Forecast> = database.forecastDao().selectAll() ?: emptyList()
+        if (forecastList.isNotEmpty()) {
+            forecastListLiveData.value = Event(Result.Success(data = forecastList))
+        }
     }
 }

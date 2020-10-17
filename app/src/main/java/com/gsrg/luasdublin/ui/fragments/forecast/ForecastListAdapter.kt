@@ -2,11 +2,11 @@ package com.gsrg.luasdublin.ui.fragments.forecast
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.gsrg.luasdublin.domain.model.TramResponse
+import com.gsrg.luasdublin.database.forecast.Forecast
 
 class ForecastListAdapter : RecyclerView.Adapter<ForecastListViewHolder>() {
 
-    private var dataList: MutableList<TramResponse> = mutableListOf() //TODO change list type
+    private var dataList: MutableList<Forecast> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ForecastListViewHolder {
         return ForecastListViewHolder.create(parent)
@@ -14,7 +14,7 @@ class ForecastListAdapter : RecyclerView.Adapter<ForecastListViewHolder>() {
 
     override fun onBindViewHolder(holder: ForecastListViewHolder, position: Int) {
         dataList[position].let {
-            holder.bind(destination = it.destination, minutes = it.dueMins)
+            holder.bind(destination = it.destination, minutes = it.dueMinutes)
         }
     }
 
@@ -22,7 +22,7 @@ class ForecastListAdapter : RecyclerView.Adapter<ForecastListViewHolder>() {
         return dataList.size
     }
 
-    fun submitData(forecastList: List<TramResponse>) {
+    fun submitData(forecastList: List<Forecast>) {
         if (forecastList != dataList) {
             dataList = forecastList.toMutableList()
             notifyDataSetChanged()
