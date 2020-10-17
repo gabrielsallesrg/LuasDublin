@@ -44,15 +44,15 @@ class ForecastFragment : BaseFragment() {
         viewModel.forecastListLiveData.observe(viewLifecycleOwner, {
             when (val result = it.getContentIfNotHandled()) {
                 is Result.Success -> {
-                    //TODO hide Loading
+                    hideLoading()
                     adapter.submitData(result.data)
                 }
                 is Result.Error -> {
-                    //TODO hide Loading
+                    hideLoading()
                     showMessage(binding.root, result.message)
                 }
                 is Result.Loading -> {
-                    //TODO show Loading
+                    showLoading()
                 }
                 null -> {
                     if (it.peekContent() is Result.Success) {
