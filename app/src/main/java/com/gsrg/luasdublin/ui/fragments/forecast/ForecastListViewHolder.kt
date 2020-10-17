@@ -14,7 +14,10 @@ class ForecastListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     fun bind(destination: String, minutes: String) {
         destinationTextView.text = destination
-        minutesTextView.text = if (minutes.isBlank()) minutes else itemView.context.getString(R.string.minutes_remaining, minutes)
+        minutesTextView.text = when (minutes.trim()) {
+            "", "DUE" -> minutes
+            else -> itemView.context.getString(R.string.minutes_remaining, minutes)
+        }
     }
 
     companion object {
