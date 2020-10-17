@@ -21,6 +21,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -38,6 +39,7 @@ class ForecastViewModel
     val forecastListLiveData = MutableLiveData<List<Forecast>>()
     val lastUpdateAtLiveData = MutableLiveData<String>()
 
+    private var requestForecastJob: Job? = null
     private var firstRun = true
 
     override fun onCleared() {
@@ -51,7 +53,8 @@ class ForecastViewModel
             if (forecastObservable != null) {
                 disposables.clear()
             }
-            viewModelScope.launch {
+            requestForecastJob?.cancel()
+            requestForecastJob = viewModelScope.launch {
                 requestForecastsFromDB()
                 requestUpdateTimeFromDB()
                 requestEventLiveData.value = Event(Result.Loading)
