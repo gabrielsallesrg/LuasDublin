@@ -1,15 +1,17 @@
 package com.gsrg.luasdublin.domain.model
 
-import org.simpleframework.xml.Attribute
+import org.simpleframework.xml.Element
+import org.simpleframework.xml.ElementList
 import org.simpleframework.xml.Root
 
-@Root
-data class ForecastResponse( //TODO adapt to XML
-    @field:Attribute(name = "Inbound", required = false)
-    @param:Attribute(name = "Inbound", required = false)
-    val inbound: List<ForecastDetailsResponse>? = null,
+@Root(name = "stopInfo", strict = false)
+data class ForecastResponse(
 
-    @field:Attribute(name = "Outbound", required = false)
-    @param:Attribute(name = "Outbound", required = false)
-    val outbound: List<ForecastDetailsResponse>? = null
+    @field:Element(name = "message", required = false)
+    @param:Element(name = "message", required = false)
+    val message: String,
+
+    @field:ElementList(name = "direction", inline = true)
+    @param:ElementList(name = "direction", inline = true)
+    val directionList: List<DirectionResponse>? = null
 )

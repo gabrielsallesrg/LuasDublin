@@ -20,8 +20,8 @@ import javax.inject.Singleton
 @Module
 object AppModule {
 
-    @Provides
     @Singleton
+    @Provides
     fun provideClient(@ApplicationContext applicationContext: Context): OkHttpClient {
         val logger = HttpLoggingInterceptor()
         logger.level = HttpLoggingInterceptor.Level.BASIC
@@ -44,6 +44,7 @@ object AppModule {
             .baseUrl(BuildConfig.LUAS_BASE_URL)
             .client(client)
             .addConverterFactory(SimpleXmlConverterFactory.create())
+            //.addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .build()
             .create(LuasApiService::class.java)

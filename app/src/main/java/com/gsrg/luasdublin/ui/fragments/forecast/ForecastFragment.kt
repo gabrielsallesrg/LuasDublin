@@ -9,7 +9,9 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import com.gsrg.luasdublin.R
 import com.gsrg.luasdublin.databinding.FragmentForecastBinding
 import com.gsrg.luasdublin.ui.fragments.BaseFragment
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ForecastFragment : BaseFragment() {
 
     private lateinit var binding: FragmentForecastBinding
