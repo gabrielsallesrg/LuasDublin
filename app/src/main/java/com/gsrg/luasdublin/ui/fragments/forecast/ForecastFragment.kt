@@ -11,6 +11,7 @@ import com.gsrg.luasdublin.databinding.FragmentForecastBinding
 import com.gsrg.luasdublin.domain.api.Result
 import com.gsrg.luasdublin.ui.fragments.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
+import java.net.UnknownHostException
 
 @AndroidEntryPoint
 class ForecastFragment : BaseFragment() {
@@ -32,6 +33,7 @@ class ForecastFragment : BaseFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setObservers()
+        //TODO viewModel.requestForecastList() once
     }
 
     private fun setListeners() {
@@ -49,7 +51,8 @@ class ForecastFragment : BaseFragment() {
                 }
                 is Result.Error -> {
                     hideLoading()
-                    showMessage(binding.root, result.message)
+                    val errorMessage: String = if (result.exception.cause is UnknownHostException) getString(R.string.connection_error) else result.message
+                    showMessage(binding.root, errorMessage)
                 }
                 is Result.Loading -> {
                     showLoading()

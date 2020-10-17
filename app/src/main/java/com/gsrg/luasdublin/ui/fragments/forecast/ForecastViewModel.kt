@@ -1,6 +1,5 @@
 package com.gsrg.luasdublin.ui.fragments.forecast
 
-import android.text.format.DateFormat
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -23,8 +22,6 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.*
-import kotlin.collections.ArrayList
 
 class ForecastViewModel
 @ViewModelInject constructor(
@@ -114,11 +111,6 @@ class ForecastViewModel
         val hour = calendar.hour()
         val minute = calendar.minute()
         return (hour > 12 || (hour == 12 && minute > 0))
-    }
-
-    private fun formattedHourAndMinute(time: Long): String {
-        val pattern = DateFormat.getBestDateTimePattern(Locale.getDefault(), "ddMMhm")
-        return DateFormat.format(pattern, Date(time)).toString()
     }
 
     private suspend fun storeForecastInDB(forecastList: List<Forecast>) {
