@@ -30,7 +30,7 @@ class ForecastViewModel
             this.firstRun = false
             viewModelScope.launch {
                 repository.getForecast(
-                    stop = getStopAbbreviationName(isAfternoon()),
+                    stop = getStopAbbreviationName(),
                     isAfternoon = isAfternoon(),
                     date = calendar.time()
                 ).collect { result: Result<List<Forecast>> ->
@@ -66,8 +66,9 @@ class ForecastViewModel
         }
     }
 
-    private fun getStopAbbreviationName(isAfternoon: Boolean): String {
-        return if (isAfternoon) "sti" else "mar"
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun getStopAbbreviationName(): String {
+        return if (isAfternoon()) "sti" else "mar"
     }
 
     /**
