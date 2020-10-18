@@ -1,6 +1,7 @@
-package com.gsrg.luasdublin.domain
+package com.gsrg.luasdublin.network
 
 import android.content.Context
+import com.gsrg.luasdublin.domain.BuildConfig
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.Protocol

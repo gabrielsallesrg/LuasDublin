@@ -2,7 +2,7 @@ package com.gsrg.luasdublin.ui.fragments.forecast
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.gsrg.luasdublin.database.forecast.Forecast
+import com.gsrg.luasdublin.core.models.Forecast
 
 class ForecastListAdapter : RecyclerView.Adapter<ForecastListViewHolder>() {
 

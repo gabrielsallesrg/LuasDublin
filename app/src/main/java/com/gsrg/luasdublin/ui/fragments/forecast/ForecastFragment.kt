@@ -8,8 +8,8 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.gsrg.luasdublin.R
+import com.gsrg.luasdublin.core.utils.Result
 import com.gsrg.luasdublin.databinding.FragmentForecastBinding
-import com.gsrg.luasdublin.domain.api.Result
 import com.gsrg.luasdublin.ui.fragments.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import java.net.UnknownHostException
@@ -51,7 +51,11 @@ class ForecastFragment : BaseFragment() {
                 }
                 is Result.Error -> {
                     hideLoading()
-                    val errorMessage: String = if (result.exception.cause is UnknownHostException) getString(R.string.connection_error) else result.message
+                    val errorMessage: String = if (result.exception is UnknownHostException) {
+                        getString(R.string.connection_error)
+                    } else {
+                        result.exception.message ?: result.exception.cause?.message ?: getString(R.string.unknown_error)
+                    }
                     showMessage(binding.root, errorMessage)
                 }
                 is Result.Loading -> {

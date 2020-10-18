@@ -3,6 +3,7 @@ package com.gsrg.luasdublin.database.forecast
 import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
+import com.gsrg.luasdublin.core.models.Forecast
 import com.gsrg.luasdublin.database.LuasDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
