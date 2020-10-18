@@ -11,7 +11,7 @@ data class DirectionResponse(
     @param:Attribute(name = "name")
     val name: String,
 
-    @field:ElementList(name = "tram", inline = true)
-    @param:ElementList(name = "tram", inline = true)
-    val tramList: List<TramResponse>
+    @field:ElementList(name = "tram", inline = true, required = false)
+    @param:ElementList(name = "tram", inline = true, required = false)
+    val tramList: List<TramResponse>? = null
 )

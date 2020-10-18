@@ -21,6 +21,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -34,68 +35,84 @@ class ForecastViewModel
     private var disposables = CompositeDisposable()
     private var forecastObservable: Observable<List<Forecast>>? = null
 
-    val forecastListLiveData = MutableLiveData<Event<Result<List<Forecast>>>>()
+    val requestEventLiveData = MutableLiveData<Event<Result<Boolean>>>()
+    val forecastListLiveData = MutableLiveData<List<Forecast>>()
     val lastUpdateAtLiveData = MutableLiveData<String>()
+
+    private var requestForecastJob: Job? = null
+    private var firstRun = true
 
     override fun onCleared() {
         super.onCleared()
         disposables.clear()
     }
 
-    fun requestForecastList() {
-        if (forecastObservable != null) {
-            disposables.clear()
-        }
-        viewModelScope.launch {
-            requestForecastsFromDB()
-            requestUpdateTimeFromDB()
-            forecastListLiveData.value = Event(Result.Loading)
-            var time: Long = 0
-            forecastObservable = repository.getForecastByStop(getStopAbbreviationName())
-                .map {
-                    val directionList = getCorrectTramList(it.directionList ?: emptyList())
-                    time = calendar.time()
-                    val resultList = ArrayList<Forecast>()
-                    for (direction in directionList) {
-                        resultList.add(Forecast(destination = direction.destination, dueMinutes = direction.dueMins))
+    /**
+     * This method uses the Single Source of Truth
+     * It will only return data from the DB
+     * When new data comes from the repository, it updates the DB.
+     * Then the new DB data is used to update the UI
+     */
+    fun requestForecastList(firstRun: Boolean = false) {
+        if (!firstRun || (firstRun && this.firstRun)) {
+            this.firstRun = false
+            if (forecastObservable != null) {
+                disposables.clear()
+            }
+            requestForecastJob?.cancel()
+            requestForecastJob = viewModelScope.launch {
+                requestForecastsFromDB()
+                requestUpdateTimeFromDB()
+                requestEventLiveData.value = Event(Result.Loading)
+                var time: Long = 0
+                forecastObservable = repository.getForecastByStop(getStopAbbreviationName())
+                    .map {
+                        val directionList = getCorrectTramList(it.directionList ?: emptyList())
+                        time = calendar.time()
+                        val resultList = ArrayList<Forecast>()
+                        for (direction in directionList) {
+                            resultList.add(Forecast(destination = direction.destination, dueMinutes = direction.dueMins))
+                        }
+                        resultList.toList()
                     }
-                    resultList.toList()
-                }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
 
-            forecastObservable?.subscribe(object : Observer<List<Forecast>> {
-                override fun onSubscribe(d: Disposable) {
-                    disposables.add(d)
-                }
-
-                override fun onNext(t: List<Forecast>) {
-                    viewModelScope.launch {
-                        storeForecastInDB(t)
-                        requestForecastsFromDB()
-                        storeUpdateTimeInDB(time)
-                        requestUpdateTimeFromDB()
+                forecastObservable?.subscribe(object : Observer<List<Forecast>> {
+                    override fun onSubscribe(d: Disposable) {
+                        disposables.add(d)
                     }
-                }
 
-                override fun onError(e: Throwable) {
-                    Timber.tag(TAG()).e(e)
-                    forecastListLiveData.value = Event(Result.Error(Exception(e), e.message ?: "Something went wrong"))
-                }
+                    override fun onNext(t: List<Forecast>) {
+                        viewModelScope.launch {
+                            storeForecastInDB(t)
+                            requestForecastsFromDB()
+                            storeUpdateTimeInDB(time)
+                            requestUpdateTimeFromDB()
+                            requestEventLiveData.value = Event(Result.Success(data = true))
+                        }
+                    }
 
-                override fun onComplete() {
-                    Timber.tag(TAG()).d("forecastObservable: onComplete")
-                }
+                    override fun onError(e: Throwable) {
+                        Timber.tag(TAG()).e(e)
+                        requestEventLiveData.value = Event(Result.Error(Exception(e), e.message ?: "Something went wrong"))
+                    }
 
-            })
+                    override fun onComplete() {
+                        Timber.tag(TAG()).d("forecastObservable: onComplete")
+                    }
+
+                })
+            }
         }
+
     }
 
     private fun getCorrectTramList(directionList: List<DirectionResponse>): List<TramResponse> {
         val directionName = if (isAfternoon()) "Inbound" else "Outbound"
         for (direction in directionList) {
             if (direction.name == directionName) {
-                return direction.tramList
+                return direction.tramList ?: emptyList()
             }
         }
         return emptyList()
@@ -115,6 +132,10 @@ class ForecastViewModel
         return (hour > 12 || (hour == 12 && minute > 0))
     }
 
+    /**
+     * From here until the end is about doing requests to DB
+     * and updating the DB
+     */
     private suspend fun storeForecastInDB(forecastList: List<Forecast>) {
         database.forecastDao().clearTable()
         database.forecastDao().insertAll(forecastList)
@@ -122,9 +143,7 @@ class ForecastViewModel
 
     private suspend fun requestForecastsFromDB() {
         val forecastList: List<Forecast> = database.forecastDao().selectAll() ?: emptyList()
-        if (forecastList.isNotEmpty()) {
-            forecastListLiveData.value = Event(Result.Success(data = forecastList))
-        }
+        forecastListLiveData.value = forecastList
     }
 
     private suspend fun storeUpdateTimeInDB(time: Long) {

@@ -15,7 +15,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="@color/design_default_color_secondary_variant"
-            android:paddingVertical="12dp"
+            android:paddingVertical="@dimen/default_padding"
             android:textAlignment="center"
             android:textColor="@color/white"
             android:textStyle="bold"
@@ -24,6 +24,18 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Updated at 25:62" />
 
+        <TextView
+            android:id="@+id/noDataTextView"
+            style="@style/BigTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/no_data_available"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/updatedAtTextView"
+            tools:visibility="visible" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="0dp"
@@ -31,7 +43,7 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/updatedAtTextView"
+            app:layout_constraintTop_toBottomOf="@id/noDataTextView"
             tools:itemCount="5"
             tools:listitem="@layout/forecast_list_item">
 
