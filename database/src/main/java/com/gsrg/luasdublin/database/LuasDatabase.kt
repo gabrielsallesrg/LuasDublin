@@ -4,11 +4,9 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.gsrg.luasdublin.database.forecast.Forecast
-import com.gsrg.luasdublin.database.updatetime.UpdateTime
 
 @Database(
-    entities = [Forecast::class, UpdateTime::class],
+    entities = [com.gsrg.luasdublin.core.models.Forecast::class, com.gsrg.luasdublin.core.models.UpdateTime::class],
     version = 1,
     exportSchema = false
 )

@@ -44,7 +44,7 @@ class ForecastDaoTest {
 
     @Test
     fun insertOneItemInDB() = runBlocking {
-        val forecast = Forecast(destination = "Unknown", dueMinutes = "35")
+        val forecast = com.gsrg.luasdublin.core.models.Forecast(destination = "Unknown", dueMinutes = "35")
         dao.insertAll(listOf(forecast))
         val forecastList = dao.selectAll()!!
         Assert.assertEquals(1, forecastList.size)
@@ -53,7 +53,7 @@ class ForecastDaoTest {
 
     @Test
     fun insertOneItemInDBAndThenRemove() = runBlocking {
-        val forecast = Forecast(destination = "Unknown", dueMinutes = "35")
+        val forecast = com.gsrg.luasdublin.core.models.Forecast(destination = "Unknown", dueMinutes = "35")
         dao.insertAll(listOf(forecast))
         dao.clearTable()
         val forecastList = dao.selectAll()!!
@@ -62,11 +62,11 @@ class ForecastDaoTest {
 
     @Test
     fun insertMultipleItemsInDB() = runBlocking {
-        val forecast0 = Forecast("Unknown", "1")
-        val forecast1 = Forecast("Calabria", "2")
-        val forecast2 = Forecast("UpTown", "3")
-        val forecast3 = Forecast("Funk you up", "4")
-        val forecast4 = Forecast("Thriller Night", "5")
+        val forecast0 = com.gsrg.luasdublin.core.models.Forecast("Unknown", "1")
+        val forecast1 = com.gsrg.luasdublin.core.models.Forecast("Calabria", "2")
+        val forecast2 = com.gsrg.luasdublin.core.models.Forecast("UpTown", "3")
+        val forecast3 = com.gsrg.luasdublin.core.models.Forecast("Funk you up", "4")
+        val forecast4 = com.gsrg.luasdublin.core.models.Forecast("Thriller Night", "5")
 
         dao.insertAll(listOf(forecast0, forecast1, forecast2, forecast3, forecast4))
         var forecastList = dao.selectAll()!!

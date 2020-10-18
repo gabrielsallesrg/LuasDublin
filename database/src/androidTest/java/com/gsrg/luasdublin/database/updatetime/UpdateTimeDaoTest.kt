@@ -44,7 +44,7 @@ class UpdateTimeDaoTest {
 
     @Test
     fun insertItemInDB() = runBlocking {
-        val updateTime = UpdateTime(date = 5000)
+        val updateTime = com.gsrg.luasdublin.core.models.UpdateTime(date = 5000)
         dao.insert(updateTime)
         val dbValue = dao.select()!!
         Assert.assertEquals(updateTime.date, dbValue.date)
@@ -54,7 +54,7 @@ class UpdateTimeDaoTest {
 
     @Test
     fun insertItemInDBAndThenRemove() = runBlocking {
-        val updateTime = UpdateTime(date = 5000)
+        val updateTime = com.gsrg.luasdublin.core.models.UpdateTime(date = 5000)
         dao.insert(updateTime)
         dao.clearTable()
         val dbValue = dao.select()
@@ -63,8 +63,8 @@ class UpdateTimeDaoTest {
 
     @Test
     fun insertMultipleItemsInDB() = runBlocking {
-        val updateTime1 = UpdateTime(date = 5000)
-        val updateTime2 = UpdateTime(date = 6000)
+        val updateTime1 = com.gsrg.luasdublin.core.models.UpdateTime(date = 5000)
+        val updateTime2 = com.gsrg.luasdublin.core.models.UpdateTime(date = 6000)
         dao.insert(updateTime1)
         dao.insert(updateTime2)
         val dbValue = dao.select()!!

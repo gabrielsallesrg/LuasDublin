@@ -1,10 +1,10 @@
 package com.gsrg.luasdublin.network.repository
 
+import com.gsrg.luasdublin.core.models.Forecast
+import com.gsrg.luasdublin.core.models.UpdateTime
 import com.gsrg.luasdublin.core.utils.Result
 import com.gsrg.luasdublin.core.utils.TAG
 import com.gsrg.luasdublin.database.ILuasDatabase
-import com.gsrg.luasdublin.database.forecast.Forecast
-import com.gsrg.luasdublin.database.updatetime.UpdateTime
 import com.gsrg.luasdublin.domain.api.LuasApiService
 import com.gsrg.luasdublin.domain.model.DirectionResponse
 import com.gsrg.luasdublin.domain.model.ForecastResponse

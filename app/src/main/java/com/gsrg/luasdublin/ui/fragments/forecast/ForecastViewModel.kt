@@ -6,8 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gsrg.luasdublin.Event
+import com.gsrg.luasdublin.core.models.Forecast
 import com.gsrg.luasdublin.core.utils.Result
-import com.gsrg.luasdublin.database.forecast.Forecast
 import com.gsrg.luasdublin.domain.repository.IForecastRepository
 import com.gsrg.luasdublin.utils.ICalendar
 import kotlinx.coroutines.flow.collect

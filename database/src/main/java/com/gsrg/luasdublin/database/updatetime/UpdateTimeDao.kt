@@ -9,10 +9,10 @@ import androidx.room.Query
 interface UpdateTimeDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(updateTime: UpdateTime)
+    suspend fun insert(updateTime: com.gsrg.luasdublin.core.models.UpdateTime)
 
     @Query("SELECT * FROM updateTimeTable LIMIT 1")
-    suspend fun select(): UpdateTime?
+    suspend fun select(): com.gsrg.luasdublin.core.models.UpdateTime?
 
     @Query("DELETE FROM updateTimeTable")
     suspend fun clearTable()

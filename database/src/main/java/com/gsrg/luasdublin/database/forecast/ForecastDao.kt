@@ -9,10 +9,10 @@ import androidx.room.Query
 interface ForecastDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(forecastList: List<Forecast>)
+    suspend fun insertAll(forecastList: List<com.gsrg.luasdublin.core.models.Forecast>)
 
     @Query("SELECT * FROM forecastTable")
-    suspend fun selectAll(): List<Forecast>?
+    suspend fun selectAll(): List<com.gsrg.luasdublin.core.models.Forecast>?
 
     @Query("DELETE FROM forecastTable")
     suspend fun clearTable()
