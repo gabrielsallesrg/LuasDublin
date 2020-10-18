@@ -6,14 +6,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gsrg.luasdublin.Event
+import com.gsrg.luasdublin.core.utils.TAG
 import com.gsrg.luasdublin.database.ILuasDatabase
 import com.gsrg.luasdublin.database.forecast.Forecast
 import com.gsrg.luasdublin.database.updatetime.UpdateTime
-import com.gsrg.luasdublin.domain.api.Result
-import com.gsrg.luasdublin.domain.data.IForecastRepository
 import com.gsrg.luasdublin.domain.model.DirectionResponse
 import com.gsrg.luasdublin.domain.model.TramResponse
-import com.gsrg.luasdublin.domain.utils.TAG
+import com.gsrg.luasdublin.domain.repository.IForecastRepository
+import com.gsrg.luasdublin.network.api.Result
 import com.gsrg.luasdublin.utils.ICalendar
 import io.reactivex.Observable
 import io.reactivex.Observer
@@ -35,7 +35,7 @@ class ForecastViewModel
     private var disposables = CompositeDisposable()
     private var forecastObservable: Observable<List<Forecast>>? = null
 
-    val requestEventLiveData = MutableLiveData<Event<Result<Boolean>>>()
+    val requestEventLiveData = MutableLiveData<Event<com.gsrg.luasdublin.network.api.Result<Boolean>>>()
     val forecastListLiveData = MutableLiveData<List<Forecast>>()
     val lastUpdateAtLiveData = MutableLiveData<String>()
 

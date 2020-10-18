@@ -1,7 +1,8 @@
-package com.gsrg.luasdublin.domain.data
+package com.gsrg.luasdublin.network.repository
 
-import com.gsrg.luasdublin.domain.api.LuasApiService
 import com.gsrg.luasdublin.domain.model.ForecastResponse
+import com.gsrg.luasdublin.domain.repository.IForecastRepository
+import com.gsrg.luasdublin.network.api.LuasApiService
 import io.reactivex.Observable
 import javax.inject.Inject
 

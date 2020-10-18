@@ -1,4 +1,4 @@
-package com.gsrg.luasdublin.domain.data
+package com.gsrg.luasdublin.domain.repository
 
 import com.gsrg.luasdublin.domain.model.ForecastResponse
 import io.reactivex.Observable

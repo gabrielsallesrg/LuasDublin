@@ -1,9 +1,8 @@
-package com.gsrg.luasdublin.domain.di
+package com.gsrg.luasdublin.network.di
 
 import android.content.Context
 import com.gsrg.luasdublin.domain.BuildConfig
-import com.gsrg.luasdublin.domain.MockInterceptor
-import com.gsrg.luasdublin.domain.api.LuasApiService
+import com.gsrg.luasdublin.network.MockInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -39,14 +38,13 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideLuasApiService(client: OkHttpClient): LuasApiService {
+    fun provideLuasApiService(client: OkHttpClient): com.gsrg.luasdublin.network.api.LuasApiService {
         return Retrofit.Builder()
             .baseUrl(BuildConfig.LUAS_BASE_URL)
             .client(client)
             .addConverterFactory(SimpleXmlConverterFactory.create())
-            //.addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .build()
-            .create(LuasApiService::class.java)
+            .create(com.gsrg.luasdublin.network.api.LuasApiService::class.java)
     }
 }

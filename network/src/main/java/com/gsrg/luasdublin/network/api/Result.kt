@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.gsrg.luasdublin.domain.api
+package com.gsrg.luasdublin.network.api
 
 /**
  * A generic class that holds a value with its loading status.

@@ -5,8 +5,8 @@ import com.gsrg.luasdublin.database.forecast.Forecast
 import com.gsrg.luasdublin.database.forecast.ForecastDao
 import com.gsrg.luasdublin.database.updatetime.UpdateTime
 import com.gsrg.luasdublin.database.updatetime.UpdateTimeDao
-import com.gsrg.luasdublin.domain.data.IForecastRepository
 import com.gsrg.luasdublin.domain.model.ForecastResponse
+import com.gsrg.luasdublin.domain.repository.IForecastRepository
 import com.gsrg.luasdublin.utils.ICalendar
 import io.reactivex.Observable
 import org.junit.Assert
