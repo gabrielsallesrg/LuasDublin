@@ -1,4 +1,4 @@
-package com.gsrg.luasdublin.domain.utils
+package com.gsrg.luasdublin.core.utils
 
 fun Any.TAG(): String {
     val tagName = this.javaClass.simpleName

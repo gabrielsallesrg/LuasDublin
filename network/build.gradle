@@ -24,11 +24,7 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8
-    }
-
-    packagingOptions {
-        exclude 'META-INF/DEPENDENCIES'
+        jvmTarget = '1.8'
     }
 
     buildTypes {
@@ -55,8 +51,8 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation project(path: ':core')
+    implementation project(path: ':domain')
     implementation project(path: ':database')
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "androidx.core:core-ktx:$core_ktx_version"
@@ -65,7 +61,6 @@ dependencies {
     // Retrofit
     def retrofit_version = '2.9.0'
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
-    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
     implementation('com.squareup.retrofit2:converter-simplexml:2.6.1') {
         exclude module: 'stax'
         exclude module: 'stax-api'
@@ -77,16 +72,12 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlin_corountines_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlin_corountines_version"
 
-    // Hilt dependencies
-    implementation "com.google.dagger:hilt-android:$hilt_version"
-    kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
-
     // Timber - Log
     implementation "com.jakewharton.timber:timber:$timber_version"
 
-    // Hilt testing dependencies
-    androidTestImplementation "com.google.dagger:hilt-android-testing:$hilt_version"
-    kaptAndroidTest "com.google.dagger:hilt-android-compiler:$hilt_version"
+    // Hilt dependencies
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+    kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
 
     testImplementation "junit:junit:$junit_version"
     androidTestImplementation "androidx.test.ext:junit:$androidx_junit_version"

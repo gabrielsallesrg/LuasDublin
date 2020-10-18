@@ -1,7 +1,7 @@
-package com.gsrg.luasdublin.domain.di
+package com.gsrg.luasdublin.network.di
 
-import com.gsrg.luasdublin.domain.data.ForecastRepository
-import com.gsrg.luasdublin.domain.data.IForecastRepository
+import com.gsrg.luasdublin.domain.repository.IForecastRepository
+import com.gsrg.luasdublin.network.repository.ForecastRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
