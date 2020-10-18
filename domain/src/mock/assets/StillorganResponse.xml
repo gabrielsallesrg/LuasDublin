@@ -1,0 +1,44 @@
+<stopInfo created="2020-10-16T13:58:30" stop="Stillorgan" stopAbv="STI">
+    <message>Green Line services operating normally</message>
+    <direction name="Inbound">
+        <tram destination="Parnell" dueMins="1" />
+        <tram destination="Parnell" dueMins="3" />
+        <tram destination="Broombridge" dueMins="8" />
+        <tram destination="Parnell" dueMins="14" />
+        <tram destination="Mock Sti Inbound 01" dueMins="21" />
+        <tram destination="Mock Sti Inbound 02" dueMins="22" />
+        <tram destination="Mock Sti Inbound 03" dueMins="23" />
+        <tram destination="Mock Sti Inbound 04" dueMins="24" />
+        <tram destination="Mock Sti Inbound 05" dueMins="25" />
+        <tram destination="Mock Sti Inbound 06" dueMins="26" />
+        <tram destination="Mock Sti Inbound 07" dueMins="27" />
+        <tram destination="Mock Sti Inbound 08" dueMins="28" />
+        <tram destination="Mock Sti Inbound 09" dueMins="29" />
+        <tram destination="Mock Sti Inbound 10" dueMins="30" />
+        <tram destination="Mock Sti Inbound 11" dueMins="31" />
+        <tram destination="Mock Sti Inbound 12" dueMins="32" />
+        <tram destination="Mock Sti Inbound 13" dueMins="33" />
+        <tram destination="Mock Sti Inbound 14" dueMins="34" />
+        <tram destination="Mock Sti Inbound 15" dueMins="35" />
+    </direction>
+    <direction name="Outbound">
+        <tram destination="Bride's Glen" dueMins="4" />
+        <tram destination="Sandyford" dueMins="14" />
+        <tram destination="Bride's Glen" dueMins="17" />
+        <tram destination="Mock Sti Outbound 01" dueMins="21" />
+        <tram destination="Mock Sti Outbound 02" dueMins="22" />
+        <tram destination="Mock Sti Outbound 03" dueMins="23" />
+        <tram destination="Mock Sti Outbound 04" dueMins="24" />
+        <tram destination="Mock Sti Outbound 05" dueMins="25" />
+        <tram destination="Mock Sti Outbound 06" dueMins="26" />
+        <tram destination="Mock Sti Outbound 07" dueMins="27" />
+        <tram destination="Mock Sti Outbound 08" dueMins="28" />
+        <tram destination="Mock Sti Outbound 09" dueMins="29" />
+        <tram destination="Mock Sti Outbound 10" dueMins="30" />
+        <tram destination="Mock Sti Outbound 11" dueMins="31" />
+        <tram destination="Mock Sti Outbound 12" dueMins="32" />
+        <tram destination="Mock Sti Outbound 13" dueMins="33" />
+        <tram destination="Mock Sti Outbound 14" dueMins="34" />
+        <tram destination="Mock Sti Outbound 15" dueMins="35" />
+    </direction>
+</stopInfo>

@@ -1,3 +1,8 @@
 <resources>
-    <string name="app_name">LuasDublin</string>
+    <string name="app_name">Luas Dublin</string>
+    <string name="refresh">Refresh</string>
+    <string name="minutes_remaining">%1$s min</string>
+    <string name="updated_at">Updated at %1$s</string>
+    <string name="connection_error">Error: Please check your internet connection</string>
+    <string name="no_data_available">No data available</string>
 </resources>

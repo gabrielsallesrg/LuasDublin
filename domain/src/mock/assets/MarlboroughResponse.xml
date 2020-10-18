@@ -1,0 +1,26 @@
+<stopInfo created="2020-10-16T13:58:22" stop="Marlborough" stopAbv="MAR">
+    <message>Green Line services operating normally</message>
+    <direction name="Inbound">
+        <tram destination="No Northbound Service" dueMins="" />
+    </direction>
+    <direction name="Outbound">
+        <tram destination="Bride's Glen" dueMins="2" />
+        <tram destination="Sandyford" dueMins="9" />
+        <tram destination="Bride's Glen" dueMins="15" />
+        <tram destination="Mock Mar Outbound 01" dueMins="21" />
+        <tram destination="Mock Mar Outbound 02" dueMins="22" />
+        <tram destination="Mock Mar Outbound 03" dueMins="23" />
+        <tram destination="Mock Mar Outbound 04" dueMins="24" />
+        <tram destination="Mock Mar Outbound 05" dueMins="25" />
+        <tram destination="Mock Mar Outbound 06" dueMins="26" />
+        <tram destination="Mock Mar Outbound 07" dueMins="27" />
+        <tram destination="Mock Mar Outbound 08" dueMins="28" />
+        <tram destination="Mock Mar Outbound 09" dueMins="29" />
+        <tram destination="Mock Mar Outbound 10" dueMins="30" />
+        <tram destination="Mock Mar Outbound 11" dueMins="31" />
+        <tram destination="Mock Mar Outbound 12" dueMins="32" />
+        <tram destination="Mock Mar Outbound 13" dueMins="33" />
+        <tram destination="Mock Mar Outbound 14" dueMins="34" />
+        <tram destination="Mock Mar Outbound 15" dueMins="35" />
+    </direction>
+</stopInfo>
