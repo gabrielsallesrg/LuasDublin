@@ -1,6 +1,5 @@
 package com.gsrg.luasdublin.network.repository
 
-import com.gsrg.luasdublin.core.utils.ICalendar
 import com.gsrg.luasdublin.core.utils.Result
 import com.gsrg.luasdublin.core.utils.TAG
 import com.gsrg.luasdublin.database.ILuasDatabase
@@ -23,16 +22,16 @@ class ForecastRepository
     private val database: ILuasDatabase
 ) : IForecastRepository {
 
-    override fun getForecast(calendar: ICalendar): Flow<Result<List<Forecast>>> = flow {
+    override fun getForecast(stop: String, isAfternoon: Boolean, date: Long): Flow<Result<List<Forecast>>> = flow {
         emit(Result.Loading(requestForecastsFromDB()))
-        requestForecastFromApi(stop = getStopAbbreviationName(calendar.isAfternoon()))
+        requestForecastFromApi(stop = stop)
             .flowOn(Dispatchers.IO)
-            .map { response: Result<ForecastResponse> -> mapForecastResponseToListForecast(response, calendar.isAfternoon()) }
+            .map { response: Result<ForecastResponse> -> mapForecastResponseToListForecast(response, isAfternoon) }
             .collect {
                 when (it) {
                     is Result.Success -> {
                         storeForecastInDB(it.data)
-                        storeUpdateTimeInDB(calendar.time())
+                        storeUpdateTimeInDB(date)
                         emit(Result.Success(requestForecastsFromDB()))
                     }
                     else -> {
@@ -77,8 +76,11 @@ class ForecastRepository
                 }
                 Result.Success(resultList.toList())
             }
-            else -> {
-                Result.Error((forecastResponse as Result.Error).exception)
+            is Result.Error -> {
+                forecastResponse
+            }
+            is Result.Loading -> {
+                Result.Error(Exception("This should never happen"))
             }
         }
     }
@@ -91,10 +93,6 @@ class ForecastRepository
             }
         }
         return emptyList()
-    }
-
-    private fun getStopAbbreviationName(isAfternoon: Boolean): String {
-        return if (isAfternoon) "sti" else "mar"
     }
 
     /**

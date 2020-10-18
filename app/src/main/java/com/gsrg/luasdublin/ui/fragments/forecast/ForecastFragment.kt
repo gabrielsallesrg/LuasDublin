@@ -51,7 +51,11 @@ class ForecastFragment : BaseFragment() {
                 }
                 is Result.Error -> {
                     hideLoading()
-                    val errorMessage: String = if (result.exception.cause is UnknownHostException) getString(R.string.connection_error) else result.message
+                    val errorMessage: String = if (result.exception is UnknownHostException) {
+                        getString(R.string.connection_error)
+                    } else {
+                        result.exception.message ?: result.exception.cause?.message ?: "Unknown Error"
+                    }
                     showMessage(binding.root, errorMessage)
                 }
                 is Result.Loading -> {

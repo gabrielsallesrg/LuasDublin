@@ -1,7 +1,7 @@
 package com.gsrg.luasdublin.di
 
-import com.gsrg.luasdublin.core.utils.ICalendar
 import com.gsrg.luasdublin.utils.Calendar
+import com.gsrg.luasdublin.utils.ICalendar
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

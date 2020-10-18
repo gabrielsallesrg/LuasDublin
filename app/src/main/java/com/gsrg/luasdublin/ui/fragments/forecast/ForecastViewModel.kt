@@ -1,14 +1,15 @@
 package com.gsrg.luasdublin.ui.fragments.forecast
 
+import androidx.annotation.VisibleForTesting
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gsrg.luasdublin.Event
-import com.gsrg.luasdublin.core.utils.ICalendar
 import com.gsrg.luasdublin.core.utils.Result
 import com.gsrg.luasdublin.database.forecast.Forecast
 import com.gsrg.luasdublin.domain.repository.IForecastRepository
+import com.gsrg.luasdublin.utils.ICalendar
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -28,7 +29,11 @@ class ForecastViewModel
         if (!firstRun || (firstRun && this.firstRun)) {
             this.firstRun = false
             viewModelScope.launch {
-                repository.getForecast(calendar).collect { result: Result<List<Forecast>> ->
+                repository.getForecast(
+                    stop = getStopAbbreviationName(isAfternoon()),
+                    isAfternoon = isAfternoon(),
+                    date = calendar.time()
+                ).collect { result: Result<List<Forecast>> ->
                     when (result) {
                         is Result.Success -> {
                             forecastListLiveData.value = result.data
@@ -36,7 +41,10 @@ class ForecastViewModel
                             updateTime()
                         }
                         is Result.Loading -> {
-                            result.data?.let { forecastListLiveData.value = it }
+                            result.data?.let {
+                                forecastListLiveData.value = it
+                                updateTime()
+                            }
                             requestEventLiveData.value = Event(result)
                         }
                         is Result.Error -> {
@@ -56,5 +64,17 @@ class ForecastViewModel
                 }
             }
         }
+    }
+
+    private fun getStopAbbreviationName(isAfternoon: Boolean): String {
+        return if (isAfternoon) "sti" else "mar"
+    }
+
+    /**
+     * It is afternoon if is between 12:01 and 23:59
+     */
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun isAfternoon(): Boolean {
+        return (calendar.hour() > 12 || (calendar.hour() == 12 && calendar.minute() > 0))
     }
 }

@@ -1,9 +1,17 @@
 package com.gsrg.luasdublin.ui.fragments.forecast
 
+import com.gsrg.luasdublin.core.utils.Result
+import com.gsrg.luasdublin.database.forecast.Forecast
+import com.gsrg.luasdublin.database.updatetime.UpdateTime
+import com.gsrg.luasdublin.domain.repository.IForecastRepository
+import com.gsrg.luasdublin.utils.ICalendar
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import org.junit.Assert
+import org.junit.Test
+
 class ForecastViewModelTest {
 
-    //TODO fix
-/*
     @Test
     fun testsIfIsAfternoon() {
         var viewModel = createViewModelForCalendar(0, 0)
@@ -47,7 +55,7 @@ class ForecastViewModelTest {
     }
 
     class MockForecastRepository : IForecastRepository {
-        override fun getForecast(calendar: ICalendar): Flow<Result<List<Forecast>>> = flow {
+        override fun getForecast(stop: String, isAfternoon: Boolean, date: Long): Flow<Result<List<Forecast>>> = flow {
             emit(Result.Success(data = emptyList()))
         }
 
@@ -56,5 +64,4 @@ class ForecastViewModelTest {
         }
 
     }
- */
 }

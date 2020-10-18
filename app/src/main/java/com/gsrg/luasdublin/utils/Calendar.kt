@@ -4,7 +4,6 @@ import android.content.Context
 import android.icu.util.Calendar
 import android.os.Build
 import android.text.format.DateFormat
-import com.gsrg.luasdublin.core.utils.ICalendar
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.text.SimpleDateFormat
 import java.util.*
@@ -37,13 +36,6 @@ class Calendar
         } else {
             java.util.Calendar.getInstance().time.time
         }
-    }
-
-    /**
-     * It is afternoon if is between 12:01 and 23:59
-     */
-    override fun isAfternoon(): Boolean {
-        return (hour() > 12 || (hour() == 12 && minute() > 0))
     }
 
     override fun formattedHourAndMinute(time: Long): String {
