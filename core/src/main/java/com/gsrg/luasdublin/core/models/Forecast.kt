@@ -1,4 +1,4 @@
-package com.gsrg.luasdublin.database.forecast
+package com.gsrg.luasdublin.core.models
 
 import androidx.room.Entity
 

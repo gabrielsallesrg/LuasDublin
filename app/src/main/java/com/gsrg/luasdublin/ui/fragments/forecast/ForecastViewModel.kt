@@ -6,8 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gsrg.luasdublin.Event
+import com.gsrg.luasdublin.core.models.Forecast
 import com.gsrg.luasdublin.core.utils.Result
-import com.gsrg.luasdublin.database.forecast.Forecast
 import com.gsrg.luasdublin.domain.repository.IForecastRepository
 import com.gsrg.luasdublin.utils.ICalendar
 import kotlinx.coroutines.flow.collect
@@ -25,6 +25,10 @@ class ForecastViewModel
 
     private var firstRun = true
 
+    /**
+     * Request a list of [Forecast]
+     * [firstRun] is used in case a view wants to make a request as soon as it appears, without user interaction
+     */
     fun requestForecastList(firstRun: Boolean = false) {
         if (!firstRun || (firstRun && this.firstRun)) {
             this.firstRun = false
@@ -56,6 +60,9 @@ class ForecastViewModel
         }
     }
 
+    /**
+     * Gets the latest time when the request was successful
+     */
     private fun updateTime() {
         viewModelScope.launch {
             repository.getUpdatedTime().collect {
@@ -66,6 +73,9 @@ class ForecastViewModel
         }
     }
 
+    /**
+     * Gets the current stop abbreviation
+     */
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     fun getStopAbbreviationName(): String {
         return if (isAfternoon()) "sti" else "mar"

@@ -1,4 +1,4 @@
-package com.gsrg.luasdublin.database.updatetime
+package com.gsrg.luasdublin.core.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
