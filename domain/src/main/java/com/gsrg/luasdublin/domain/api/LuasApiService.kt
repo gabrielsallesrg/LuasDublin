@@ -1,12 +1,12 @@
-package com.gsrg.luasdublin.network.api
+package com.gsrg.luasdublin.domain.api
 
 import com.gsrg.luasdublin.domain.model.ForecastResponse
-import io.reactivex.Observable
+import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface LuasApiService {
 
     @GET("get.ashx?action=forecast&encrypt=false")
-    fun luasTimes(@Query("stop") stop: String): Observable<ForecastResponse>
+    suspend fun luasTimes(@Query("stop") stop: String): Response<ForecastResponse>
 }

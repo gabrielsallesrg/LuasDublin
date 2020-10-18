@@ -8,6 +8,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.gsrg.luasdublin.R
+import com.gsrg.luasdublin.core.utils.Result
 import com.gsrg.luasdublin.databinding.FragmentForecastBinding
 import com.gsrg.luasdublin.ui.fragments.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
@@ -45,15 +46,15 @@ class ForecastFragment : BaseFragment() {
     private fun setObservers() {
         viewModel.requestEventLiveData.observe(viewLifecycleOwner, {
             when (val result = it.getContentIfNotHandled()) {
-                is com.gsrg.luasdublin.network.api.Result.Success -> {
+                is Result.Success -> {
                     hideLoading()
                 }
-                is com.gsrg.luasdublin.network.api.Result.Error -> {
+                is Result.Error -> {
                     hideLoading()
                     val errorMessage: String = if (result.exception.cause is UnknownHostException) getString(R.string.connection_error) else result.message
                     showMessage(binding.root, errorMessage)
                 }
-                is com.gsrg.luasdublin.network.api.Result.Loading -> {
+                is Result.Loading -> {
                     showLoading()
                 }
             }
